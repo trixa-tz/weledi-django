@@ -1,6 +1,49 @@
-<h1> All Posts </h1 >
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weledi Blog</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
 
-{% for post in posts %}
-    <h2>{{ post.title }}</h2 >
-    <p>{{ post.body }}</p>
-{% endfor %}
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">Weledi<span>Blog</span></div>
+            <nav>
+                <a href="#">Home</a>
+                <a href="#">Blog</a>
+                <a href="#">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="masthead">
+        <h1>Recent Updates</h1>
+        <p>The latest stories and announcements from Weledi.</p>
+    </section>
+
+    <div class="rule"><hr></div>
+
+    <main class="feed">
+        {% for post in posts %}
+            <article class="post-card">
+                <span class="post-date">{{ post.created }}</span>
+                <h2 class="post-title">{{ post.title }}</h2>
+                <p class="post-body">{{ post.body }}</p>
+            </article>
+        {% empty %}
+            <div class="empty">
+                <p>No news published yet. Please check back soon.</p>
+            </div>
+        {% endfor %}
+    </main>
+
+    <footer>
+        &copy; 2026 Weledi News. All rights reserved.
+    </footer>
+
+</body>
+</html>

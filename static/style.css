@@ -1,0 +1,155 @@
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --navy: #0f2a43;
+    --accent: #1d6fb8;
+    --ink: #1a2230;
+    --muted: #5c6b7a;
+    --line: #e2e8f0;
+    --bg: #f7f9fb;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+}
+
+/* ---- Top bar ---- */
+.topbar {
+    background: var(--navy);
+    color: #fff;
+    padding: 14px 24px;
+}
+
+.topbar-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.brand span {
+    color: #6fb7f0;
+}
+
+.topbar nav a {
+    color: #cdd9e5;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-left: 22px;
+}
+
+.topbar nav a:hover {
+    color: #fff;
+}
+
+/* ---- Header ---- */
+.masthead {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 24px;
+}
+
+.eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.masthead h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+}
+
+.masthead p {
+    color: var(--muted);
+    margin-top: 8px;
+    max-width: 580px;
+}
+
+.rule {
+    max-width: 960px;
+    margin: 24px auto 0;
+    padding: 0 24px;
+}
+
+.rule hr {
+    border: none;
+    border-top: 2px solid var(--line);
+}
+
+/* ---- Article list ---- */
+.feed {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+}
+
+.post-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease;
+}
+
+.post-card:hover {
+    border-color: var(--accent);
+}
+
+.post-date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+}
+
+.post-title {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.post-body {
+    color: var(--muted);
+    font-size: 1rem;
+}
+
+.empty {
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    padding: 48px;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* ---- Footer ---- */
+footer {
+    border-top: 1px solid var(--line);
+    background: #fff;
+    text-align: center;
+    padding: 24px;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
