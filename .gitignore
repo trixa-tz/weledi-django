@@ -1,0 +1,3 @@
+enviro
+*.sqlite3
+__pycache__
