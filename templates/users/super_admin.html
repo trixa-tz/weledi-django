@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Super Admin | Weledi News{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+    <div class="flex items-center gap-3 mb-6">
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand-600 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+            </svg>
+        </span>
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">Super Admin</h1>
+            <p class="text-sm text-slate-500">Manage system users and auditor access.</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-slate-50 text-left text-slate-500 uppercase text-xs tracking-wide">
+                    <th class="px-5 py-3 font-semibold">User</th>
+                    <th class="px-5 py-3 font-semibold">Phone</th>
+                    <th class="px-5 py-3 font-semibold">Role</th>
+                    <th class="px-5 py-3 font-semibold">Auditor</th>
+                    <th class="px-5 py-3 font-semibold text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for u in users %}
+                <tr class="hover:bg-slate-50/60">
+                    <td class="px-5 py-3">
+                        <div class="font-semibold text-slate-900">{{ u.username }}</div>
+                        <div class="text-xs text-slate-400">{{ u.email|default:"-" }}</div>
+                    </td>
+                    <td class="px-5 py-3 text-slate-600">{{ u.phone|default:"-" }}</td>
+                    <td class="px-5 py-3">
+                        {% if u.is_superuser %}
+                            <span class="inline-flex text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-100 text-brand-800">Superuser</span>
+                        {% else %}
+                            <span class="inline-flex text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Member</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-5 py-3">
+                        {% if u.is_auditor %}
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Yes
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> No
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-5 py-3 text-right">
+                        <form method="post" action="{% url 'toggle_auditor' u.id %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="rounded-md px-3 py-1.5 text-xs font-semibold transition
+                                {% if u.is_auditor %}bg-red-50 text-red-600 hover:bg-red-100{% else %}bg-brand-600 text-white hover:bg-brand-700{% endif %}">
+                                {% if u.is_auditor %}Revoke auditor{% else %}Make auditor{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="px-5 py-10 text-center text-slate-500">No users yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

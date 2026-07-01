@@ -1,49 +1,78 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weledi Blog</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <header class="topbar">
-        <div class="topbar-inner">
-            <div class="brand">Weledi<span>Blog</span></div>
-            <nav>
-                <a href="#">Home</a>
-                <a href="#">Blog</a>
-                <a href="#">About</a>
-            </nav>
+{% block title %}Weledi News | Latest Stories{% endblock %}
+
+{% block content %}
+<!-- Hero / masthead -->
+<section class="bg-white border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+        <div class="flex items-center gap-2 mb-3">
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-600 animate-pulse"></span> Live
+            </span>
         </div>
-    </header>
-
-    <section class="masthead">
-        <h1>Recent Updates</h1>
-        <p>The latest stories and announcements from Weledi.</p>
-    </section>
-
-    <div class="rule"><hr></div>
-
-    <main class="feed">
-        {% for post in posts %}
-            <article class="post-card">
-                <span class="post-date">{{ post.created }}</span>
-                <h2 class="post-title">{{ post.title }}</h2>
-                <p class="post-body">{{ post.body }}</p>
-            </article>
-        {% empty %}
-            <div class="empty">
-                <p>No news published yet. Please check back soon.</p>
+        <div class="flex items-end justify-between gap-4 flex-wrap">
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">Latest News</h1>
+                <p class="mt-2 text-slate-500 max-w-xl">The stories and announcements from Weledi, reported clearly, as they happen.</p>
             </div>
+            {% if user.is_authenticated and user.is_auditor or user.is_superuser %}
+            <a href="{% url 'create_news' %}"
+                class="inline-flex items-center gap-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2.5 shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                    <path d="M5 12h14M12 5v14"/>
+                </svg>
+                Publish news
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Feed -->
+<section class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    {% if posts %}
+    <div class="grid gap-5 sm:grid-cols-2">
+        {% for post in posts %}
+        <article class="group bg-white rounded-xl border border-slate-200 hover:border-brand-300 hover:shadow-md transition p-6 flex flex-col">
+            <div class="flex items-center gap-2 text-xs text-slate-400 mb-3">
+                <span class="inline-block w-2 h-2 rounded-full bg-brand-600"></span>
+                <time>{{ post.created|date:"M j, Y · g:i A" }}</time>
+            </div>
+            <h2 class="text-xl font-bold text-slate-900 leading-snug group-hover:text-brand-700 transition">{{ post.title }}</h2>
+            <p class="mt-2 text-slate-600 text-sm leading-relaxed line-clamp-4">{{ post.body }}</p>
+            <span class="mt-4 text-sm font-semibold text-brand-600">Read more &rarr;</span>
+        </article>
         {% endfor %}
-    </main>
+    </div>
 
-    <footer>
-        &copy; 2026 Weledi News. All rights reserved.
-    </footer>
+    {% if page.paginator.num_pages > 1 %}
+    <nav class="mt-10 flex items-center justify-center gap-1.5" aria-label="Pagination">
+        {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}" class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-700 transition">Prev</a>
+        {% else %}
+            <span class="inline-flex items-center rounded-lg border border-slate-100 bg-slate-50 px-3.5 py-2 text-sm font-semibold text-slate-300 cursor-not-allowed">Prev</span>
+        {% endif %}
 
-</body>
-</html>
+        {% for num in page.paginator.page_range %}
+            {% if num == page.number %}
+                <span class="inline-flex items-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}" class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-700 transition">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}" class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-700 transition">Next</a>
+        {% else %}
+            <span class="inline-flex items-center rounded-lg border border-slate-100 bg-slate-50 px-3.5 py-2 text-sm font-semibold text-slate-300 cursor-not-allowed">Next</span>
+        {% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="text-center border border-dashed border-slate-300 rounded-xl bg-white py-20 px-6">
+        <p class="text-slate-500">No news yet. Check back soon, we're about to go live.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

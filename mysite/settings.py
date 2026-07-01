@@ -10,10 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from the project-level .env file.
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nq6a-4cu4g71u=+i^gj*(&vvg!se!p_z+7ycdk=atl7ji1337+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,7 +46,10 @@ INSTALLED_APPS = [
 
     # local apps
     'posts',
-    'users'
+    'users',
+
+    # third party apps
+    "rest_framework",
 
 ]
 
@@ -80,10 +89,16 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'weledi-django'),
+        'USER': os.environ.get('DB_USER', 'weledi'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
+
+
 
 
 # Password validation
@@ -123,3 +138,13 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static')),]
+
+# Authentication
+# Use our custom user model (AbstractUser subclass) in the users app.
+AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'post_list'
+LOGOUT_REDIRECT_URL = 'post_list'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

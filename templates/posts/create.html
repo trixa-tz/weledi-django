@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Publish news | Weledi News{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+        <div class="flex items-center gap-3 mb-6">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                    <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                </svg>
+            </span>
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-900">Publish news</h1>
+                <p class="text-sm text-slate-500">Write a story for the public feed.</p>
+            </div>
+        </div>
+
+        <form method="post" action="{% url 'create_news' %}" class="space-y-5" data-validate novalidate>
+            {% csrf_token %}
+            <div>
+                <label for="title" class="block text-sm font-semibold text-slate-700 mb-1.5">Headline</label>
+                <input type="text" name="title" id="title" required maxlength="100"
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none transition">
+            </div>
+            <div>
+                <label for="body" class="block text-sm font-semibold text-slate-700 mb-1.5">Story</label>
+                <textarea name="body" id="body" rows="8" required
+                    class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none transition resize-y"></textarea>
+            </div>
+            <div class="flex items-center gap-3">
+                <button type="submit"
+                    class="rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-semibold px-5 py-2.5 shadow-sm transition">
+                    Publish
+                </button>
+                <a href="{% url 'post_list' %}" class="text-sm font-semibold text-slate-500 hover:text-slate-700">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script src="{% static 'js/auth-validation.js' %}"></script>
+{% endblock %}
