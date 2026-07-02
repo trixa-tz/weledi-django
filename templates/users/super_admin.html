@@ -12,7 +12,7 @@
         </span>
         <div>
             <h1 class="text-2xl font-extrabold text-slate-900">Super Admin</h1>
-            <p class="text-sm text-slate-500">Manage system users and auditor access.</p>
+            <p class="text-sm text-slate-500">Manage system users and editor access.</p>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
                     <th class="px-5 py-3 font-semibold">User</th>
                     <th class="px-5 py-3 font-semibold">Phone</th>
                     <th class="px-5 py-3 font-semibold">Role</th>
-                    <th class="px-5 py-3 font-semibold">Auditor</th>
+                    <th class="px-5 py-3 font-semibold">Editor</th>
                     <th class="px-5 py-3 font-semibold text-right">Action</th>
                 </tr>
             </thead>
@@ -43,7 +43,7 @@
                         {% endif %}
                     </td>
                     <td class="px-5 py-3">
-                        {% if u.is_auditor %}
+                        {% if u.is_editor %}
                             <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Yes
                             </span>
@@ -54,12 +54,12 @@
                         {% endif %}
                     </td>
                     <td class="px-5 py-3 text-right">
-                        <form method="post" action="{% url 'toggle_auditor' u.id %}">
+                        <form method="post" action="{% url 'toggle_editor' u.id %}">
                             {% csrf_token %}
                             <button type="submit"
                                 class="rounded-md px-3 py-1.5 text-xs font-semibold transition
-                                {% if u.is_auditor %}bg-red-50 text-red-600 hover:bg-red-100{% else %}bg-brand-600 text-white hover:bg-brand-700{% endif %}">
-                                {% if u.is_auditor %}Revoke auditor{% else %}Make auditor{% endif %}
+                                {% if u.is_editor %}bg-red-50 text-red-600 hover:bg-red-100{% else %}bg-brand-600 text-white hover:bg-brand-700{% endif %}">
+                                {% if u.is_editor %}Revoke editor{% else %}Make editor{% endif %}
                             </button>
                         </form>
                     </td>

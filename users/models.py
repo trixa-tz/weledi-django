@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -9,10 +11,11 @@ class User(AbstractUser):
     painful migration. Login still happens with `username` + `password`.
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     phone = models.CharField(max_length=30, blank=True)
-    is_auditor = models.BooleanField(
-        default=False,
-        help_text="Auditors can review system activity.",
+    is_editor = models.BooleanField(
+        default = False,
+        help_text = "Editors can publish news to the public.",
     )
 
     def __str__(self):

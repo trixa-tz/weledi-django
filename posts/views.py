@@ -1,8 +1,14 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
-from rest_framework.decorators import api_view
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
@@ -25,6 +31,11 @@ def post_list(request):
     return render(request, 'posts/list.html', {'posts': page, 'page': page})
 
 
+def post_detail(request, id):
+    post = get_object_or_404(Post, id = id)
+    return render(request, 'posts/detail.html', {'post': post})
+
+
 def support(request):
     return render(request, 'support.html')
 
@@ -40,11 +51,9 @@ def _unique_slug(title):
 
 
 def create_news(request):
-    # Only auditors (or superusers) may publish news to the public.
-    if not request.user.is_authenticated or not (
-        request.user.is_auditor or request.user.is_superuser
-    ):
-        messages.error(request, 'Only auditors can publish news.')
+    # Only editors may publish news. Being a superuser is NOT enough.
+    if not request.user.is_authenticated or not request.user.is_editor:
+        messages.error(request, 'Only editors can publish news.')
         return redirect('post_list')
 
     if request.method == 'POST':
@@ -62,6 +71,8 @@ def create_news(request):
 
 
 @api_view(['GET', 'POST']) # decorators
+@authentication_classes([TokenAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def post_collection(request: Request):
     if request.method == 'POST':
         data: dict = request.data
@@ -69,12 +80,16 @@ def post_collection(request: Request):
         # create a new post
         title = data.get('title')
         body = data.get('body')
-        slug = title.lower().replace(' ', '-')
 
-        Post.objects.create(title=title, slug=slug,
-                             body=body)
+        if not title or not body:
+            return Response({'detail': 'title and body are required.'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        print('Post created')
+        post = Post.objects.create(title=title, slug=_unique_slug(title),
+                                   body=body)
+
+        return Response(PostSerializer(post).data,
+                        status=status.HTTP_201_CREATED)
 
     posts = Post.objects.all() # [<Post: Post 1>, <Post: Post 2>]
 

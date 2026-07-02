@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -51,8 +52,11 @@ def login_view(request):
         return redirect('post_list')
 
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
-        password = request.POST.get('password', '')
+        
+        data = request.POST
+
+        username = data.get('username', '').strip()
+        password = data.get('password', '')
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
@@ -69,6 +73,13 @@ def logout_view(request):
     return redirect('post_list')
 
 
+@login_required
+def profile_view(request):
+    # Each user has one API token. Create it on first visit.
+    token, _ = Token.objects.get_or_create(user=request.user)
+    return render(request, 'users/profile.html', {'token': token.key})
+
+
 # ---------------------------------------------------------------------------
 # Super-admin area (only superusers may enter)
 # ---------------------------------------------------------------------------
@@ -79,18 +90,18 @@ def _is_superuser(user):
 
 @user_passes_test(_is_superuser, login_url='login')
 def super_admin(request):
-    users = User.objects.all().order_by('-is_superuser', '-is_auditor', 'username')
+    users = User.objects.all().order_by('-is_superuser', '-is_editor', 'username')
     return render(request, 'users/super_admin.html', {'users': users})
 
 
 @require_POST
 @user_passes_test(_is_superuser, login_url='login')
-def toggle_auditor(request, user_id):
+def toggle_editor(request, user_id):
     target = get_object_or_404(User, pk=user_id)
-    target.is_auditor = not target.is_auditor
-    target.save(update_fields=['is_auditor'])
-    state = 'granted' if target.is_auditor else 'revoked'
-    messages.success(request, f'Auditor access {state} for {target.username}.')
+    target.is_editor = not target.is_editor
+    target.save(update_fields=['is_editor'])
+    state = 'granted' if target.is_editor else 'revoked'
+    messages.success(request, f'Editor access {state} for {target.username}.')
     return redirect('super_admin')
 
 
@@ -118,7 +129,12 @@ def api_signup(request: Request):
         username=username, password=password, phone=phone,
     )
 
-    return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+    token, _ = Token.objects.get_or_create(user=user)
+
+    return Response({
+        'user': UserSerializer(user).data,
+        'token': token.key,
+    }, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
@@ -133,7 +149,10 @@ def api_login(request: Request):
         return Response({'detail': 'Invalid username or password.'},
                         status=status.HTTP_401_UNAUTHORIZED)
 
+    token, _ = Token.objects.get_or_create(user=user)
+
     return Response({
         'detail': 'Login successful.',
         'user': UserSerializer(user).data,
+        'token': token.key,
     })

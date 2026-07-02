@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
     # third party apps
     "rest_framework",
+    "rest_framework.authtoken",
 
 ]
 
@@ -148,3 +149,19 @@ LOGIN_REDIRECT_URL = 'post_list'
 LOGOUT_REDIRECT_URL = 'post_list'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Django REST Framework
+# Default authentication classes are available to every API view. Individual
+# views still decide their own permissions (public endpoints stay open; the
+# data endpoints require an authenticated user).
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}

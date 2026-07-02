@@ -6,17 +6,13 @@
 <!-- Hero / masthead -->
 <section class="bg-white border-b border-slate-200">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        <div class="flex items-center gap-2 mb-3">
-            <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full">
-                <span class="w-1.5 h-1.5 rounded-full bg-brand-600 animate-pulse"></span> Live
-            </span>
-        </div>
+        
         <div class="flex items-end justify-between gap-4 flex-wrap">
             <div>
                 <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">Latest News</h1>
                 <p class="mt-2 text-slate-500 max-w-xl">The stories and announcements from Weledi, reported clearly, as they happen.</p>
             </div>
-            {% if user.is_authenticated and user.is_auditor or user.is_superuser %}
+            {% if user.is_authenticated and user.is_editor %}
             <a href="{% url 'create_news' %}"
                 class="inline-flex items-center gap-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2.5 shadow-sm transition">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
@@ -34,15 +30,14 @@
     {% if posts %}
     <div class="grid gap-5 sm:grid-cols-2">
         {% for post in posts %}
-        <article class="group bg-white rounded-xl border border-slate-200 hover:border-brand-300 hover:shadow-md transition p-6 flex flex-col">
+        <a href="{% url 'post_detail' post.id %}" class="group bg-white rounded-xl border border-slate-200 hover:border-brand-300 hover:shadow-md transition p-6 flex flex-col">
             <div class="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                <span class="inline-block w-2 h-2 rounded-full bg-brand-600"></span>
-                <time>{{ post.created|date:"M j, Y · g:i A" }}</time>
+               <time>{{ post.created|date:"M j, Y · g:i A" }}</time>
             </div>
             <h2 class="text-xl font-bold text-slate-900 leading-snug group-hover:text-brand-700 transition">{{ post.title }}</h2>
             <p class="mt-2 text-slate-600 text-sm leading-relaxed line-clamp-4">{{ post.body }}</p>
             <span class="mt-4 text-sm font-semibold text-brand-600">Read more &rarr;</span>
-        </article>
+        </a>
         {% endfor %}
     </div>
 
