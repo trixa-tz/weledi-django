@@ -44,6 +44,10 @@ def signup_view(request):
             messages.success(request, f'Welcome to Weledi, {user.username}!')
             return redirect('post_list')
 
+        # failed submit: re-render with the entered values (never the password)
+        return render(request, 'users/signup.html',
+                      {'username': username, 'phone': phone})
+
     return render(request, 'users/signup.html')
 
 
@@ -64,6 +68,8 @@ def login_view(request):
             messages.success(request, f'Welcome back, {user.username}!')
             return redirect('post_list')
         messages.error(request, 'Invalid username or password.')
+        # failed login: keep the username so they only retype the password
+        return render(request, 'users/login.html', {'username': username})
 
     return render(request, 'users/login.html')
 

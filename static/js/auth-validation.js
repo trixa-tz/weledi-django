@@ -99,6 +99,21 @@
             form.addEventListener("input", resetOnInteract);
             form.addEventListener("change", resetOnInteract);
         });
+
+        // Password visibility toggles (eye / eye-off).
+        document.querySelectorAll("[data-toggle-password]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                var input = document.getElementById(btn.getAttribute("data-toggle-password"));
+                if (!input) return;
+                var reveal = input.type === "password";
+                input.type = reveal ? "text" : "password";
+                var eye = btn.querySelector("[data-eye]");
+                var eyeOff = btn.querySelector("[data-eye-off]");
+                if (eye) eye.classList.toggle("hidden", reveal);
+                if (eyeOff) eyeOff.classList.toggle("hidden", !reveal);
+                btn.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
+            });
+        });
     }
 
     if (document.readyState === "loading") {
