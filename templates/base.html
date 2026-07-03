@@ -113,7 +113,8 @@
         </div>
     </header>
 
-    <!-- Flash messages -->
+    <!-- Flash messages (pages with their own in-card messages override this block) -->
+    {% block messages %}
     {% if messages %}
     <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 mt-4 space-y-2">
         {% for message in messages %}
@@ -126,6 +127,7 @@
         {% endfor %}
     </div>
     {% endif %}
+    {% endblock %}
 
     <main class="flex-1 w-full">
         {% block content %}{% endblock %}
