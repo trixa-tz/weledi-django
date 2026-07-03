@@ -17,6 +17,7 @@ urlpatterns = [
     # API endpoints (same style as posts api)
     path('api/auth/signup/', views.api_signup, name='api_signup'),
     path('api/auth/login/', views.api_login, name='api_login'),
+    
     # DRF's built-in: POST {username, password} -> {token}
     path('api/auth/token/', obtain_auth_token, name='api_token'),
 ]

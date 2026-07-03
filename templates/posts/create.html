@@ -19,6 +19,8 @@
             </div>
         </div>
 
+        {% include 'partials/_form_messages.html' %}
+
         <form method="post" action="{% url 'create_news' %}" class="space-y-5" data-validate novalidate>
             {% csrf_token %}
             <div>
