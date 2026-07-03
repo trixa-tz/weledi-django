@@ -47,19 +47,10 @@
             <div class="h-16 flex items-center justify-between">
                 <!-- Brand -->
                 <a href="{% url 'post_list' %}" class="flex items-center gap-2.5 shrink-0">
-                    <!-- Custom WP monogram (hand-drawn SVG paths) -->
+                    <!-- WP monogram: sharp black square, W blue / P white -->
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" class="w-9 h-9" aria-label="Weledi Press">
-                        <defs>
-                            <linearGradient id="wpHeader" x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0" stop-color="#3b82f6"/>
-                                <stop offset="1" stop-color="#1e3a8a"/>
-                            </linearGradient>
-                        </defs>
-                        <rect width="40" height="40" rx="11" fill="url(#wpHeader)"/>
-                        <g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M7 13 L10.5 27 L14 17 L17.5 27 L21 13"/>
-                            <path d="M25 27 V13 H29 A4 4 0 0 1 29 21 H25"/>
-                        </g>
+                        <rect width="40" height="40" fill="#0f172a"/>
+                        <text x="20" y="28" text-anchor="middle" font-family="Figtree, system-ui, sans-serif" font-size="19" font-weight="800" letter-spacing="-0.5"><tspan fill="#3b82f6">W</tspan><tspan fill="#ffffff">P</tspan></text>
                     </svg>
                     <span class="text-lg font-extrabold tracking-tight text-slate-900 leading-none">Weledi<span class="text-brand-600">Press</span></span>
                 </a>
@@ -148,17 +139,8 @@
                 <div class="lg:col-span-1">
                     <a href="{% url 'post_list' %}" class="flex items-center gap-2.5">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" class="w-9 h-9" aria-label="Weledi Press">
-                            <defs>
-                                <linearGradient id="wpFooter" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0" stop-color="#3b82f6"/>
-                                    <stop offset="1" stop-color="#60a5fa"/>
-                                </linearGradient>
-                            </defs>
-                            <rect width="40" height="40" rx="11" fill="url(#wpFooter)"/>
-                            <g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7 13 L10.5 27 L14 17 L17.5 27 L21 13"/>
-                                <path d="M25 27 V13 H29 A4 4 0 0 1 29 21 H25"/>
-                            </g>
+                            <rect x="0.5" y="0.5" width="39" height="39" fill="#0f172a" stroke="#334155"/>
+                            <text x="20" y="28" text-anchor="middle" font-family="Figtree, system-ui, sans-serif" font-size="19" font-weight="800" letter-spacing="-0.5"><tspan fill="#3b82f6">W</tspan><tspan fill="#ffffff">P</tspan></text>
                         </svg>
                         <span class="text-lg font-extrabold tracking-tight text-white">Weledi<span class="text-brand-600">Press</span></span>
                     </a>
