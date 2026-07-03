@@ -1,5 +1,7 @@
-// Client-side validation for the login & signup forms.
-// Runs before the form is submitted and shows inline error messages.
+// Client-side validation for the auth & publish forms.
+// Behaviour: validate ONLY when the user clicks submit. If errors are shown,
+// the next interaction with the form (typing/changing any field) clears ALL
+// errors and waits for the user to submit again. No live/on-type validation.
 // The server still validates everything again. This is just for UX.
 
 (function () {
@@ -13,47 +15,49 @@
     }
 
     function showError(input, message) {
-        clearError(input);
-        input.classList.add("border-red-400", "focus:ring-red-100");
-        input.classList.remove("border-slate-300", "focus:ring-brand-100");
-
+        markInvalid(input);
         var msg = document.createElement("p");
         msg.className = "field-error mt-1.5 text-xs text-red-600";
         msg.textContent = message;
         fieldContainer(input).appendChild(msg);
     }
 
-    function clearError(input) {
-        input.classList.remove("border-red-400", "focus:ring-red-100");
-        input.classList.add("border-slate-300", "focus:ring-brand-100");
-        var existing = fieldContainer(input).querySelector(".field-error");
-        if (existing) existing.remove();
+    function markInvalid(input) {
+        input.classList.add("border-red-400", "focus:ring-red-100");
+        input.classList.remove("border-slate-300", "focus:ring-brand-100");
     }
 
-    function validateField(input) {
+    function resetField(input) {
+        input.classList.remove("border-red-400", "focus:ring-red-100");
+        input.classList.add("border-slate-300", "focus:ring-brand-100");
+    }
+
+    // Wipe every error in the form and restore all field styles.
+    function clearAllErrors(form) {
+        form.querySelectorAll(".field-error").forEach(function (el) { el.remove(); });
+        form.querySelectorAll("input, textarea").forEach(resetField);
+    }
+
+    // Validate a single field; show an error and return false if invalid.
+    function checkField(input) {
         var value = (input.value || "").trim();
 
         if (input.hasAttribute("required") && value === "") {
             showError(input, "This field is required.");
             return false;
         }
-
-        if (input.name === "username" && value !== "" && value.length < 3) {
+        if (input.name === "username" && value.length < 3) {
             showError(input, "Username must be at least 3 characters.");
             return false;
         }
-
-        if (input.name === "password" && value !== "" && value.length < 8) {
+        if (input.name === "password" && value.length < 8) {
             showError(input, "Password must be at least 8 characters.");
             return false;
         }
-
         if (input.name === "phone" && value !== "" && !/^[+0-9()\s-]{7,}$/.test(value)) {
             showError(input, "Please enter a valid phone number.");
             return false;
         }
-
-        clearError(input);
         return true;
     }
 
@@ -61,33 +65,39 @@
         var forms = document.querySelectorAll("form[data-validate]");
 
         forms.forEach(function (form) {
-            var inputs = form.querySelectorAll("input");
-
-            // Live validation as the user leaves / edits a field.
-            inputs.forEach(function (input) {
-                input.addEventListener("blur", function () { validateField(input); });
-                input.addEventListener("input", function () {
-                    if (fieldContainer(input).querySelector(".field-error")) validateField(input);
-                });
-            });
+            var fields = form.querySelectorAll("input, textarea");
+            var showingErrors = false;
 
             form.addEventListener("submit", function (e) {
                 var ok = true;
-
-                inputs.forEach(function (input) {
-                    if (!validateField(input)) ok = false;
+                fields.forEach(function (input) {
+                    if (!checkField(input)) ok = false;
                 });
 
                 // Confirm-password match (signup form only).
                 var pwd = form.querySelector('input[name="password"]');
                 var pwd2 = form.querySelector('input[name="password2"]');
-                if (pwd && pwd2 && pwd2.value !== "" && pwd.value !== pwd2.value) {
+                if (pwd && pwd2 && pwd.value !== pwd2.value) {
                     showError(pwd2, "Passwords do not match.");
                     ok = false;
                 }
 
-                if (!ok) e.preventDefault();
+                if (!ok) {
+                    e.preventDefault();
+                    showingErrors = true;
+                }
             });
+
+            // Any interaction after errors are shown clears them and waits
+            // for the next submit. No re-validation happens while typing.
+            function resetOnInteract() {
+                if (showingErrors) {
+                    clearAllErrors(form);
+                    showingErrors = false;
+                }
+            }
+            form.addEventListener("input", resetOnInteract);
+            form.addEventListener("change", resetOnInteract);
         });
     }
 
