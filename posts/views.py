@@ -67,6 +67,10 @@ def create_news(request):
             messages.success(request, 'News published successfully.')
             return redirect('post_list')
 
+        # failed submit: keep what the editor already typed
+        return render(request, 'posts/create.html',
+                      {'title': title, 'body': body})
+
     return render(request, 'posts/create.html')
 
 
