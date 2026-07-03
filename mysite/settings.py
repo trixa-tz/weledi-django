@@ -29,7 +29,7 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = 'django-insecure-nq6a-4cu4g71u=+i^gj*(&vvg!se!p_z+7ycdk=atl7ji1337+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['press.weledi.com', 'localhost', '127.0.0.1', '159.65.127.40']
 
