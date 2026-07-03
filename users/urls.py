@@ -12,7 +12,7 @@ urlpatterns = [
 
     # super-admin area (superusers only)
     path('super-admin/', views.super_admin, name='super_admin'),
-    path('super-admin/users/<int:user_id>/toggle-editor/', views.toggle_editor, name='toggle_editor'),
+    path('super-admin/users/<uuid:user_id>/toggle-editor/', views.toggle_editor, name='toggle_editor'),
 
     # API endpoints (same style as posts api)
     path('api/auth/signup/', views.api_signup, name='api_signup'),

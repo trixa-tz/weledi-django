@@ -1,0 +1,1 @@
+git pull && sudo systemctl daemon-reload && sudo systemctl restart weledi-django && sudo systemctl reload nginx 
