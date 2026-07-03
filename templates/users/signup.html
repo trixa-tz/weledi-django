@@ -12,6 +12,8 @@
             <p class="mt-1 text-sm text-slate-500">Join Weledi and never miss a story.</p>
         </div>
 
+        {% include 'partials/_form_messages.html' %}
+
         <form method="post" action="{% url 'signup' %}" class="space-y-5" data-validate novalidate>
             {% csrf_token %}
             <div>
